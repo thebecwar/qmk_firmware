@@ -1,41 +1,12 @@
 // !!! DO NOT ADD #pragma once !!! //
 
-// Step 1.
-// Declare custom effects using the RGB_MATRIX_EFFECT macro
-// (note the lack of semicolon after the macro!)
-RGB_MATRIX_EFFECT(my_cool_effect)
-RGB_MATRIX_EFFECT(my_cool_effect2)
+RGB_MATRIX_EFFECT(NewEffect)
 
-// Step 2.
-// Define effects inside the `RGB_MATRIX_CUSTOM_EFFECT_IMPLS` ifdef block
 #ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
-
-// e.g: A simple effect, self-contained within a single method
-static bool my_cool_effect(effect_params_t* params) {
-  RGB_MATRIX_USE_LIMITS(led_min, led_max);
-  for (uint8_t i = led_min; i < led_max; i++) {
-    rgb_matrix_set_color(i, 0xff, 0xff, 0x00);
-  }
-  return led_max < DRIVER_LED_TOTAL;
+static HSV NewEffect_math(HSV hsv, int16_t dx, int16_t dy, uint8_t dist, uint8_t time) {
+    hsv.h = scale8(hsv.h + dist - time + atan2_8(dy, dx), hsv.h);
+    return hsv;
 }
+bool NewEffect(effect_params_t* params) { return effect_runner_dx_dy_dist(params, &NewEffect_math); }
+#endif
 
-// e.g: A more complex effect, relying on external methods and state, with
-// dedicated init and run methods
-static uint8_t some_global_state;
-static void my_cool_effect2_complex_init(effect_params_t* params) {
-  some_global_state = 1;
-}
-static bool my_cool_effect2_complex_run(effect_params_t* params) {
-  RGB_MATRIX_USE_LIMITS(led_min, led_max);
-  for (uint8_t i = led_min; i < led_max; i++) {
-    rgb_matrix_set_color(i, 0xff, some_global_state++, 0xff);
-  }
-
-  return led_max < DRIVER_LED_TOTAL;
-}
-static bool my_cool_effect2(effect_params_t* params) {
-  if (params->init) my_cool_effect2_complex_init(params);
-  return my_cool_effect2_complex_run(params);
-}
-
-#endif // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
