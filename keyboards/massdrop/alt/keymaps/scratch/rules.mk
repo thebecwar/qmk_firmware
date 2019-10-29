@@ -1,5 +1,6 @@
 # RGB_MATRIX_CUSTOM_USER
 RGB_MATRIX_CUSTOM_USER = yes
+MOUSEKEY_ENABLE = yes
 CONSOLE_ENABLE = no
 
 # Animation framebuffer effects
