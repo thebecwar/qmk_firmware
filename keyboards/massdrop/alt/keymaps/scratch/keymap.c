@@ -9,21 +9,14 @@ enum alt_keycodes {
     DBG_KBD,               //DEBUG Toggle Keyboard Prints
     DBG_MOU,               //DEBUG Toggle Mouse Prints
     MD_BOOT,               //Restart into bootloader after hold timeout
+    U_COL_R,
+    U_COL_G,
+    U_COL_B
 };
 
 #define TG_NKRO MAGIC_TOGGLE_NKRO //Toggle 6KRO / NKRO mode
 
 keymap_config_t keymap_config;
-
-//RGB_MODE_PLAIN RGB_M_P Static (no animation) mode
-//RGB_MODE_BREATHE RGB_M_B Breathing animation mode
-//RGB_MODE_RAINBOW RGB_M_R Rainbow animation mode
-//RGB_MODE_SWIRL RGB_M_SW Swirl animation mode
-//RGB_MODE_SNAKE RGB_M_SN Snake animation mode
-//RGB_MODE_KNIGHT RGB_M_K "Knight Rider" animation mode
-//RGB_MODE_XMAS RGB_M_X Christmas animation mode
-//RGB_MODE_GRADIENT RGB_M_G Static gradient animation mode
-//RGB_MODE_RGBTEST RGB_M_T Red, Green, Blue test animation mode
 
 #define MAX_LAYER 5
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -38,7 +31,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
         RGB_M_P, RGB_SPD, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, U_T_AUTO,U_T_AGCR,_______, KC_PSCR, KC_SLCK, KC_PAUS, _______, KC_END, \
         _______, RGB_RMOD,RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,          _______, KC_VOLU, \
-        _______, RGB_TOG, _______, _______, _______, MD_BOOT, TG_NKRO, DBG_TOG, _______, _______, _______, TO(2),            KC_PGUP, KC_VOLD, \
+        _______, RGB_TOG, U_COL_R, U_COL_G, U_COL_B, MD_BOOT, TG_NKRO, DBG_TOG, _______, _______, _______, TO(2),            KC_PGUP, KC_VOLD, \
         _______, _______, _______,                            _______,                            _______, _______, KC_HOME, KC_PGDN, KC_END  \
     ),
     [2] = LAYOUT_65_ansi_blocker(
@@ -52,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
         RGB_M_P, RGB_SPD, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, U_T_AUTO,U_T_AGCR,_______, KC_PSCR, KC_SLCK, KC_PAUS, KC_END,  _______, \
         KC_CAPS, RGB_RMOD,RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,          _______, KC_VOLU, \
-        _______, RGB_TOG, _______, _______, _______, MD_BOOT, TG_NKRO, DBG_TOG, _______, _______, _______, TO(4),            KC_MPLY, KC_VOLD, \
+        _______, RGB_TOG, U_COL_R, U_COL_G, U_COL_B, MD_BOOT, TG_NKRO, DBG_TOG, _______, _______, _______, TO(4),            KC_MPLY, KC_VOLD, \
         _______, _______, _______,                            _______,                            _______, _______, KC_MPRV, KC_MSTP, KC_MNXT  \
     ),
     [4] = LAYOUT(
@@ -66,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
         RGB_M_P, RGB_SPD, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, U_T_AUTO,U_T_AGCR,_______, KC_PSCR, KC_SLCK, KC_PAUS, KC_END,  _______, \
         KC_CAPS, RGB_RMOD,RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,          _______, KC_VOLU, \
-        _______, RGB_TOG, _______, _______, _______, MD_BOOT, TG_NKRO, DBG_TOG, _______, _______, _______, TO(0),            KC_MPLY, KC_VOLD, \
+        _______, RGB_TOG, U_COL_R, U_COL_G, U_COL_B, MD_BOOT, TG_NKRO, DBG_TOG, _______, _______, _______, TO(0),            KC_MPLY, KC_VOLD, \
         _______, _______, _______,                            _______,                            _______, _______, KC_MPRV, KC_MSTP, KC_MNXT  \
     ),
     /*
@@ -164,6 +157,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                   break;
               }
             }
+            return false;
+        case U_COL_R:
+            rgb_matrix_config.hsv.h = 0;
+            return false;
+        case U_COL_G:
+            rgb_matrix_config.hsv.h = 85; // 120 degrees
+            return false;
+        case U_COL_B:
+            rgb_matrix_config.hsv.h = 170; // 240 degrees
             return false;
         default:
             return true; //Process all other keycodes normally
